@@ -31,6 +31,10 @@ function placeBet(uint guess, uint result) public payable returns (bool)  {
         chercker = true;
     }
     
+    if (chercker = true) {
+        payable(msg.sender).transfer(msg.value * guess);
+        
+    }
     return chercker;
     
 }

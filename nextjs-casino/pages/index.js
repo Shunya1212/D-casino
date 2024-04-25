@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-// import { FC } from 'react';
-// import '..styles/global.css';
-// import '../styles/global.css';
-// import styles from './styles/global.css';
-// import './global.css';
-// import '../styles/global.css';
 
 import { Roulette, useRoulette } from 'react-hook-roulette';
 const options = [2, 5, 10];
@@ -40,7 +34,7 @@ const Home = () => {
   const {roulette, onStart, onStop, result } = useRoulette({ items });
   const [selectedNumber, setSelectedNumber] = useState(options[2]);
   const [betResult, setBetResult] = useState('Will you be Rich or Poor?');
-  const [multiplier, setMultiplier] = useState(false)
+  const [multiplier, setMultiplier] = useState(false);
 
   useEffect(() => {
     const ethereum = window.ethereum;
@@ -56,13 +50,6 @@ const Home = () => {
       placeBet();
     }
   }, [result]); 
-
-  // const onStop = () => {
-  //   originalOnStop();
-  //   if (result !== null) {  // 結果がすでにある場合は即座に賭けを行う
-  //     placeBet();
-  //   }
-  // };
 
   const initializeWeb3 = async () => {
     if (window.ethereum) {
@@ -82,85 +69,16 @@ const Home = () => {
   };
 
   const placeBet = async () => {
+    setMultiplier(false);
+    setBetResult('');
+    setBetStatus('');
+
     if (!web3) {
       setBetStatus('Please connect to MetaMask first');
       return;
     }
 
-    // const contractAddress = '0xc1ce53d1500F25603A2CeA0E170098bC480461Bd';
-    // const contractABI = [
-    //   {
-    //     "inputs": [],
-    //     "stateMutability": "payable",
-    //     "type": "constructor"
-    //   },
-    //   {
-    //     "anonymous": false,
-    //     "inputs": [
-    //       {
-    //         "indexed": false,
-    //         "internalType": "bool",
-    //         "name": "win",
-    //         "type": "bool"
-    //       }
-    //     ],
-    //     "name": "BetResult",
-    //     "type": "event"
-    //   },
-    //   {
-    //     "inputs": [],
-    //     "name": "destroy",
-    //     "outputs": [],
-    //     "stateMutability": "nonpayable",
-    //     "type": "function"
-    //   },
-    //   {
-    //     "inputs": [],
-    //     "name": "getBalance",
-    //     "outputs": [
-    //       {
-    //         "internalType": "uint256",
-    //         "name": "",
-    //         "type": "uint256"
-    //       }
-    //     ],
-    //     "stateMutability": "view",
-    //     "type": "function"
-    //   },
-    //   {
-    //     "inputs": [],
-    //     "name": "owner",
-    //     "outputs": [
-    //       {
-    //         "internalType": "address",
-    //         "name": "",
-    //         "type": "address"
-    //       }
-    //     ],
-    //     "stateMutability": "view",
-    //     "type": "function"
-    //   },
-    //   {
-    //     "inputs": [
-    //       {
-    //         "internalType": "uint256",
-    //         "name": "guess",
-    //         "type": "uint256"
-    //       },
-    //       {
-    //         "internalType": "uint256",
-    //         "name": "result",
-    //         "type": "uint256"
-    //       }
-    //     ],
-    //     "name": "placeBet",
-    //     "outputs": [],
-    //     "stateMutability": "payable",
-    //     "type": "function"
-    //   }
-    // ]
-
-    const contractAddress = '0x249524a3b4969099B5056f40323fE7345766360d';
+    const contractAddress = '0x85054D4d16Dffa57db64380836283229C72AaFb5';
     const contractABI = [
       {
         "inputs": [],
@@ -188,30 +106,6 @@ const Home = () => {
         "type": "function"
       },
       {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "guess",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "result",
-            "type": "uint256"
-          }
-        ],
-        "name": "placeBet",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "payable",
-        "type": "function"
-      },
-      {
         "inputs": [],
         "name": "getBalance",
         "outputs": [
@@ -236,8 +130,33 @@ const Home = () => {
         ],
         "stateMutability": "view",
         "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "guess",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "result",
+            "type": "uint256"
+          }
+        ],
+        "name": "placeBet",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "payable",
+        "type": "function"
       }
     ]
+
     const contract = new web3.eth.Contract(contractABI, contractAddress);
 
     setBetStatus('Placing bet...');
@@ -251,29 +170,16 @@ const Home = () => {
       });
       // If the promise resolves successfully, it means the transaction was sent. Now you can set up an event listener for the confirmation.
       setBetStatus('Bet placed successfully!');
-      // console.log(response)
-      if (selectedNumber == 10 && guess % 10 == 0) {
-         setMultiplier(true);
-      }
-      // 5の倍数の場合、掛け金の5倍を返す
-      else if (selectedNumber == 5 && guess % 5 == 0) {
-        setMultiplier(true);
-      }
-      // 2の倍数の場合、掛け金の2倍を返す
-      else if (selectedNumber == 2 && guess % 2 == 0) {
-        setMultiplier(true);
-      }
 
-      console.log(multiplier)
-    if (multiplier) {
-      setBetResult('Congrats, You are WINNER');
-  } else {
-     setBetResult('Haha! You are LOSER');
-  }
+      if (guess % selectedNumber != 0) {
+        setBetResult('Haha! You are LOSER');
+      } else {
+        setBetResult('Congrats, You are WINNER');
+      }
       
     } catch (error) {
       setBetStatus('Error placing bet: ' + error.message);
-    }  
+    } 
   };
 
   return (

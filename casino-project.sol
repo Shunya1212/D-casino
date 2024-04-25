@@ -13,7 +13,7 @@ contract Roulette {
 
     // プレイヤーが数字を選択して賭ける関数
 function placeBet(uint guess, uint result) public payable returns (bool)  {
-    require(msg.value ==  0.000000000000000005 ether, "Bet amount must be  0.000000000000000005 ETH");
+    // require(msg.value ==  0.000000000000000005 ether, "Bet amount must be  0.000000000000000005 ETH");
     require(guess % 2 == 0 || guess % 5 == 0, "You can only bet on multiples of 2, 5, or 10.");
 
     bool chercker = false;
@@ -31,18 +31,17 @@ function placeBet(uint guess, uint result) public payable returns (bool)  {
         chercker = true;
     }
     
-    if (chercker = true) {
+    // multiplierが0より大きい場合、勝ちとする
+    if (chercker) {
         payable(msg.sender).transfer(msg.value * guess);
-        
     }
-    return chercker;
-    
-}
 
+    return chercker;
+}
 
     // コントラクトの残高を確認する関数。オーナーのみが実行可能。
     function getBalance() public view returns (uint) {
-        // require(msg.sender == owner, "Only the owner can check the balance.");
+        require(msg.sender == owner, "Only the owner can check the balance.");
         return address(this).balance;
     }
 
